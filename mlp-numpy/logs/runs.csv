@@ -1,0 +1,1 @@
+run_id,timestamp,exp_group,activation,init,preprocess,hidden_sizes,use_bn,lr,batch_size,epochs,seed,train_acc,val_acc,test_acc,final_train_loss,final_val_loss,epochs_to_90pct_best,wall_time_sec,git_commit,notes

@@ -1,0 +1,8 @@
+numpy==1.26.4
+matplotlib==3.8.4
+pandas==2.2.2
+tqdm==4.66.4
+# Chỉ dùng cho: (a) tải Fashion-MNIST, (b) bản đối chiếu PyTorch ở phần "Yêu cầu khác".
+# KHÔNG dùng torch trong src/ — mô hình chính phải thuần NumPy.
+torch==2.3.0
+torchvision==0.18.0
