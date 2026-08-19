@@ -10,9 +10,9 @@ cách khởi tạo trọng số và cách tiền xử lý dữ liệu.
 
 | Họ tên | MSSV | Phần phụ trách | Đóng góp |
 |---|---|---|---|
-| | | | % |
-| | | | % |
-| | | | % |
+|||Phần 1| 33.33% |
+|Trịnh Công Vinh|20252579M|Phần 2| 33.33% |
+|Nguyễn Thị Bích Hằng|20261098M|Phần 3| 33.33% |
 
 ## Cài đặt
 
