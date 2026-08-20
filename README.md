@@ -9,7 +9,7 @@ cách khởi tạo trọng số và cách tiền xử lý dữ liệu.
 ## Thành viên
 
 | Họ tên | MSSV |Đóng góp |
-|---|---|---|---|
+|---|---|---|
 |Nguyễn Thị Bích Hằng|20261098M|100% |
 
 ## Cài đặt
