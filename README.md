@@ -8,16 +8,14 @@ cách khởi tạo trọng số và cách tiền xử lý dữ liệu.
 
 ## Thành viên
 
-| Họ tên | MSSV | Phần phụ trách | Đóng góp |
+| Họ tên | MSSV |Đóng góp |
 |---|---|---|---|
-|||Phần 1| 33.33% |
-|Trịnh Công Vinh|20252579M|Phần 2| 33.33% |
-|Nguyễn Thị Bích Hằng|20261098M|Phần 3| 33.33% |
+|Nguyễn Thị Bích Hằng|20261098M|100% |
 
 ## Cài đặt
 
 ```bash
-git clone <URL>
+git clone https://github.com/HangBich/MLP/tree/main
 cd mlp-numpy
 python -m venv .venv && source .venv/bin/activate   # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
