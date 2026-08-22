@@ -1,30 +1,22 @@
-"""Softmax + Cross-Entropy."""
 import numpy as np
 
 
 def softmax(Z):
-    """Ổn định số: trừ max theo từng hàng trước khi exp.
-    Bỏ bước này sẽ tràn số khi dùng khởi tạo normal_large.
-    Z (N, C) -> (N, C)
-    """
-    raise NotImplementedError
+    Z_shift = Z - np.max(Z, axis=-1, keepdims=True)
+    E = np.exp(Z_shift)
+    return E/np.sum(E, axis=-1, keepdims=True)
 
 
 def softmax_cross_entropy(Z, y):
-    """Gộp softmax và cross-entropy làm một để ổn định số và để gradient gọn.
-
-    Z : (N, C) logits (đầu ra tầng cuối, CHƯA qua softmax)
-    y : (N,) nhãn nguyên
-
-    Returns
-    -------
-    loss  : float, trung bình trên batch
-    dZ    : (N, C), chính là (softmax(Z) - onehot(y)) / N
-
-    Nhớ eps trong log để tránh log(0).
-    """
-    raise NotImplementedError
+    N = Z.shape[0]
+    softmax_Z = softmax(Z)
+    p_correct = softmax_Z[np.arange(N), y]
+    Loss = -np.mean(np.log(p_correct+1e-12))
+    dZ = softmax_Z.copy()
+    dZ[np.arange(N), y] -= 1
+    dZ /= N
+    return Loss, dZ
 
 
 def accuracy(Z, y):
-    raise NotImplementedError
+    return np.mean(np.argmax(Z, axis=1) == y)

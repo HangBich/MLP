@@ -1,10 +1,22 @@
-"""Tầng Linear và BatchNorm1D thuần NumPy.
-
-Quy ước cache: mỗi tầng tự giữ những gì backward cần trong self.cache,
-được ghi ở forward và đọc ở backward. Sau mỗi backward nên xóa cache
-để tránh dùng nhầm dữ liệu của batch trước.
-"""
 import numpy as np
+from .activations import get_activation
+
+class Activation:
+    def __init__(self, name, slope=0.01):
+        self.fwd, self.bwd = get_activation(name, slope)
+        self.cache = None
+
+    def forward(self, X):
+        A = self.fwd(X)
+        self.cache = (X, A)
+        return A
+
+    def backward(self, dOut):
+        Z, A = self.cache
+        return self.bwd(dOut, Z, A)
+
+    def params_and_grads(self):
+        return []
 
 
 class Linear:
@@ -14,29 +26,26 @@ class Linear:
     """
 
     def __init__(self, fan_in: int, fan_out: int, init_scheme: str, rng):
-        self.W = None   # TODO: init_weights(...)
-        self.b = None   # TODO: init_bias(...)
+        std = np.sqrt(2.0 / fan_in)
+        self.W =  rng.normal(0, std, size=(fan_in, fan_out))
+        self.b = np.zeros(fan_out)
         self.dW = None
         self.db = None
         self.cache = None
-        raise NotImplementedError
 
     def forward(self, X):
-        raise NotImplementedError
+        self.cache = X
+        return X @ self.W + self.b
 
     def backward(self, dOut):
-        """Cho dOut (N, D_out), tính:
-            self.dW (D_in, D_out), self.db (D_out,), trả về dX (N, D_in)
-
-        Lưu ý chuẩn hóa theo batch: quyết định chia 1/N ở ĐÂY hay ở hàm loss,
-        chỉ chọn MỘT chỗ. Chia hai lần là lỗi kinh điển khiến gradient check
-        lệch đúng bằng hệ số N.
-        """
-        raise NotImplementedError
+        X = self.cache 
+        self.dW = X.T @ dOut 
+        self.db = np.sum(dOut, axis=0)
+        dX = dOut @ self.W.T
+        return dX 
 
     def params_and_grads(self):
-        """Trả về [(W, dW), (b, db)] cho optimizer."""
-        raise NotImplementedError
+        return [(self.W, self.dW), (self.b, self.db)]
 
 
 class BatchNorm1D:

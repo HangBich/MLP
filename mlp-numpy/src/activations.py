@@ -1,48 +1,42 @@
-"""4 hàm kích hoạt bắt buộc so sánh: Sigmoid, Tanh, ReLU, Leaky ReLU.
-
-Mỗi hàm cài theo cặp forward/backward. Quy ước backward:
-    dZ = dA * f'(Z)
-Truyền vào cả Z (pre-activation) và A (post-activation) để bạn tự chọn
-cách tính đạo hàm rẻ hơn (vd sigmoid: f' = A*(1-A), khỏi tính lại exp).
-"""
 import numpy as np
 
 
 def sigmoid(Z):
-    """Ổn định số: tách nhánh Z >= 0 và Z < 0, tránh overflow exp(-Z)."""
-    raise NotImplementedError
+    out = np.empty_like(Z, dtype=np.float64)
+    pos = Z >= 0 
+    out[pos] = 1.0/(1.0+np.exp(-Z[pos]))
+    ez = np.exp(Z[~pos])
+    out[~pos] = ez/(1.0+ez)
+    return out
 
 
 def sigmoid_backward(dA, Z, A):
-    raise NotImplementedError
+    return dA * A * (1-A)
 
 
 def tanh(Z):
-    raise NotImplementedError
+    return np.tanh(Z)
 
 
 def tanh_backward(dA, Z, A):
-    raise NotImplementedError
+    return dA * (1-A**2)
 
 
 def relu(Z):
-    raise NotImplementedError
+    return np.maximum(Z, 0)
 
 
 def relu_backward(dA, Z, A):
-    """Lưu ý điểm Z == 0: chọn 0 hay 1 đều được, nêu rõ lựa chọn trong báo cáo."""
-    raise NotImplementedError
+    return dA*(Z>0)
 
 
 def leaky_relu(Z, slope: float = 0.01):
-    raise NotImplementedError
-
+    return np.where(Z>0, Z, slope * Z)
 
 def leaky_relu_backward(dA, Z, A, slope: float = 0.01):
-    raise NotImplementedError
+    return dA * np.where(Z > 0, 1.0, slope)
 
 
-# Registry: config.activation -> (forward, backward)
 ACTIVATIONS = {
     "sigmoid": (sigmoid, sigmoid_backward),
     "tanh": (tanh, tanh_backward),
@@ -53,4 +47,14 @@ ACTIVATIONS = {
 
 def get_activation(name: str, slope: float = 0.01):
     """Trả về (fwd, bwd) đã bind sẵn slope cho leaky_relu."""
-    raise NotImplementedError
+    fwd, bwd = ACTIVATIONS[name]
+    if name == "leaky_relu":
+        return (lambda Z: fwd(Z, slope),
+                lambda dA, Z, A: bwd(dA, Z, A, slope))
+    return fwd, bwd
+
+Z = np.array([[-1000., -1., 0., 1., 1000.]])
+for name in ACTIVATIONS:
+    f, b = get_activation(name)
+    A = f(Z)
+    print(name, A.round(3), b(np.ones_like(Z), Z, A).round(3))
