@@ -43,6 +43,7 @@ for act in ["sigmoid", "tanh", "relu", "leaky_relu"]:
                 records.append({
                     "act": act, "epoch": ep, "layer": i, "kind": "gradient",
                     "grad_norm": float(np.linalg.norm(layer.dW)),
+                    "grad_rms": float(np.linalg.norm(layer.dW) / np.sqrt(layer.dW.size)),
                 })
 
 with open("results/activation_gradient_stats.json", "w") as f:

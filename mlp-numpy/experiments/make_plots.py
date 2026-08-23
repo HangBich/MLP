@@ -72,13 +72,14 @@ def plot_fig3(recs):
     last_ep = max(r["epoch"] for r in recs)
     fig, ax = plt.subplots(figsize=(7, 4))
     for act in ["sigmoid", "tanh", "relu", "leaky_relu"]:
-        pts = [(r["layer"], r["grad_norm"]) for r in recs
+        pts = [(r["layer"], r["grad_rms"]) for r in recs
                if r["kind"] == "gradient" and r["act"] == act and r["epoch"] == last_ep]
         pts.sort()
         if pts:
             ax.plot([p[0] for p in pts], [p[1] for p in pts], "o-", label=act)
-    ax.set(xlabel="Chỉ số tầng (0 = gần đầu vào)", ylabel="||dW||",
-           title="Chuẩn gradient theo tầng", yscale="log")
+    ax.set(xlabel="Chỉ số tầng (0 = gần đầu vào)",
+       ylabel="RMS của dW  (||dW|| / √số phần tử)",
+       title="Độ lớn gradient trung bình theo tầng", yscale="log")
     ax.legend(); ax.grid(alpha=.3)
     fig.tight_layout(); fig.savefig(f"{FIG}/fig3_grad_norm.png", dpi=150); plt.close(fig)
 

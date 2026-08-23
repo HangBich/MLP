@@ -3,7 +3,4 @@ __pycache__/
 .venv/
 venv/
 data/
-results/histories/*.json
-results/figures/*.png
-!results/figures/.gitkeep
 .ipynb_checkpoints/
