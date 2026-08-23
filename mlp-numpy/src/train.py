@@ -1,46 +1,67 @@
-"""Vòng lặp huấn luyện cho MỘT lượt chạy (một Config + một seed)."""
 import numpy as np
 
 from . import data as data_mod
 from .config import Config
 from .model import MLP
-from .monitor import Monitor
 from .optim import SGD
 from .utils import save_history, set_seed, timer
+from .losses import softmax_cross_entropy
 
 
-def evaluate(model, X, y, batch_size: int = 512):
-    """Trả về (loss, accuracy) ở chế độ eval. Chia batch để đỡ tốn RAM."""
-    raise NotImplementedError
+def evaluate(model, X, y, batch_size=512):
+    n = len(X)
+    total_loss, total_correct = 0.0, 0
+    for start in range(0, n, batch_size):
+        Xb, yb = X[start:start+batch_size], y[start:start+batch_size]
+        logits = model.forward(Xb, training=False)
+        loss, _ = softmax_cross_entropy(logits, yb)
+        total_loss += loss * len(Xb)
+        total_correct += np.sum(np.argmax(logits, axis=1) == yb)
+    return total_loss / n, total_correct / n
 
 
 def train_one_run(cfg: Config) -> dict:
-    """Chạy trọn một cấu hình. KHÔNG in bừa ra stdout — trả về dict để
-    run_experiment.py ghi vào CSV.
+    rng = set_seed(cfg.seed)
 
-    Các bước:
-      1. rng = set_seed(cfg.seed)
-      2. tải dữ liệu -> train/val split -> preprocess (fit trên train)
-      3. dựng MLP, SGD, Monitor
-      4. vòng lặp epoch:
-           - iterate_minibatches -> forward -> loss -> backward -> step
-           - cuối epoch: evaluate train/val, ghi vào history
-           - nếu epoch % cfg.monitor_every == 0: thu thống kê activation/gradient
-      5. đánh giá trên test
-      6. save_history(...)
+    (Xtr, ytr), (Xte, yte) = data_mod.load_raw(cfg.dataset)
+    Xtr, ytr, Xval, yval = data_mod.train_val_split(Xtr, ytr, cfg.val_ratio, rng)
+    Xtr, (Xval, Xte) = data_mod.preprocess(Xtr, [Xval, Xte], cfg.preprocess)
 
-    Returns
-    -------
-    dict với các khóa khớp header của logs/runs.csv:
-        train_acc, val_acc, test_acc, final_train_loss, final_val_loss,
-        epochs_to_90pct_best, wall_time_sec, history_path
-    """
-    raise NotImplementedError
+    model = MLP(Xtr.shape[1], cfg.hidden_sizes, 10, cfg, rng)
+    opt = SGD(model.params_and_grads, cfg.lr)
+
+    history = {"train_loss": [], "train_acc": [], "val_loss": [], "val_acc": []}
+
+    with timer() as t:
+        for epoch in range(cfg.epochs):
+            for Xb, yb in data_mod.iterate_minibatches(Xtr, ytr, cfg.batch_size, rng):
+                loss, dZ = softmax_cross_entropy(model.forward(Xb), yb)
+                model.backward(dZ)
+                opt.step()
+
+            tr1, tra = evaluate(model, Xtr, ytr)
+            v1, va = evaluate(model, Xval, yval)
+            history["train_loss"].append(tr1); history["train_acc"].append(tra)
+            history["val_loss"].append(v1); history["val_acc"].append(va)
+
+    tel, tea = evaluate(model, Xte, yte)
+    path = save_history(cfg.run_id(), {"config": cfg.to_dict(), **history})
+
+    return {
+        "train_acc": history["train_acc"][-1], 
+        "val_acc": history["val_acc"][-1],
+        "test_acc": tea, 
+        "final_train_loss": history["train_loss"][-1],
+        "final_val_loss": history["val_loss"][-1],
+        "epochs_to_90pct_best": epochs_to_threshold(history["val_acc"]),
+        "wall_time_sec": round(t["elapsed"], 2),
+        "history_path": path,
+    }
 
 
 def epochs_to_threshold(val_acc_curve, frac: float = 0.9) -> int:
-    """'Thời gian hội tụ' dùng để so sánh công bằng giữa các cấu hình:
-    số epoch đầu tiên đạt >= frac * (val_acc tốt nhất của chính lượt chạy đó).
-    Trả về -1 nếu không bao giờ đạt.
-    """
-    raise NotImplementedError
+    best = max(val_acc_curve)
+    for i, a in enumerate(val_acc_curve):
+        if a>= frac * best:
+            return i+1 
+    return -1

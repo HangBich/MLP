@@ -53,8 +53,9 @@ def get_activation(name: str, slope: float = 0.01):
                 lambda dA, Z, A: bwd(dA, Z, A, slope))
     return fwd, bwd
 
-Z = np.array([[-1000., -1., 0., 1., 1000.]])
-for name in ACTIVATIONS:
-    f, b = get_activation(name)
-    A = f(Z)
-    print(name, A.round(3), b(np.ones_like(Z), Z, A).round(3))
+if __name__ == "__main__":
+    Z = np.array([[-1000., -1., 0., 1., 1000.]])
+    for name in ACTIVATIONS:
+        f, b = get_activation(name)
+        A = f(Z)
+        print(name, A.round(3), b(np.ones_like(Z), Z, A).round(3))

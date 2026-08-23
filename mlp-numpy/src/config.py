@@ -5,7 +5,7 @@ from typing import List
 @dataclass
 class Config:
     # --- Kiến trúc ---
-    hidden_sizes: List[int] = field(default_factory=lambda: [256, 128, 64])  # >= 3 tầng ẩn (bắt buộc)
+    hidden_sizes: List[int] = field(default_factory=lambda: [256, 128, 64])  # 3 tầng ẩn
     activation: str = "relu"        # sigmoid | tanh | relu | leaky_relu
     init: str = "he"                # zeros | normal_small | normal_large | xavier | he
     use_bn: bool = False            # phần "Yêu cầu khác"

@@ -1,0 +1,59 @@
+nohup: ignoring input
+=== 1. Baseline ===
+[done] baseline__act-relu__init-he__prep-standardize__bn-0__lr-0.1__bs-128__seed-0  val_acc=0.891
+[done] baseline__act-relu__init-he__prep-standardize__bn-0__lr-0.1__bs-128__seed-1  val_acc=0.8855
+[done] baseline__act-relu__init-he__prep-standardize__bn-0__lr-0.1__bs-128__seed-2  val_acc=0.8953333333333333
+=== 2. Hàm kích hoạt (4 cấu hình) ===
+[done] act_sweep__act-sigmoid__init-xavier__prep-standardize__bn-0__lr-0.1__bs-128__seed-0  val_acc=0.8866666666666667
+[done] act_sweep__act-sigmoid__init-xavier__prep-standardize__bn-0__lr-0.1__bs-128__seed-1  val_acc=0.8823333333333333
+[done] act_sweep__act-sigmoid__init-xavier__prep-standardize__bn-0__lr-0.1__bs-128__seed-2  val_acc=0.8871666666666667
+[done] act_sweep__act-tanh__init-xavier__prep-standardize__bn-0__lr-0.1__bs-128__seed-0  val_acc=0.893
+[done] act_sweep__act-tanh__init-xavier__prep-standardize__bn-0__lr-0.1__bs-128__seed-1  val_acc=0.8868333333333334
+[done] act_sweep__act-tanh__init-xavier__prep-standardize__bn-0__lr-0.1__bs-128__seed-2  val_acc=0.8916666666666667
+[done] act_sweep__act-relu__init-xavier__prep-standardize__bn-0__lr-0.1__bs-128__seed-0  val_acc=0.8883333333333333
+[done] act_sweep__act-relu__init-xavier__prep-standardize__bn-0__lr-0.1__bs-128__seed-1  val_acc=0.8923333333333333
+[done] act_sweep__act-relu__init-xavier__prep-standardize__bn-0__lr-0.1__bs-128__seed-2  val_acc=0.8895
+[done] act_sweep__act-leaky_relu__init-xavier__prep-standardize__bn-0__lr-0.1__bs-128__seed-0  val_acc=0.8886666666666667
+[done] act_sweep__act-leaky_relu__init-xavier__prep-standardize__bn-0__lr-0.1__bs-128__seed-1  val_acc=0.8911666666666667
+[done] act_sweep__act-leaky_relu__init-xavier__prep-standardize__bn-0__lr-0.1__bs-128__seed-2  val_acc=0.8913333333333333
+=== 3. Khởi tạo (5 cấu hình) ===
+[done] init_sweep__act-relu__init-zeros__prep-standardize__bn-0__lr-0.1__bs-128__seed-0  val_acc=0.10016666666666667
+[done] init_sweep__act-relu__init-zeros__prep-standardize__bn-0__lr-0.1__bs-128__seed-1  val_acc=0.0965
+[done] init_sweep__act-relu__init-zeros__prep-standardize__bn-0__lr-0.1__bs-128__seed-2  val_acc=0.099
+[done] init_sweep__act-relu__init-normal_small__prep-standardize__bn-0__lr-0.1__bs-128__seed-0  val_acc=0.8866666666666667
+[done] init_sweep__act-relu__init-normal_small__prep-standardize__bn-0__lr-0.1__bs-128__seed-1  val_acc=0.8901666666666667
+[done] init_sweep__act-relu__init-normal_small__prep-standardize__bn-0__lr-0.1__bs-128__seed-2  val_acc=0.8906666666666667
+/home/eurus/Desktop/MLP/mlp-numpy/src/layers.py:33: RuntimeWarning: overflow encountered in matmul
+  return X @ self.W + self.b
+/home/eurus/Desktop/MLP/mlp-numpy/src/layers.py:33: RuntimeWarning: invalid value encountered in matmul
+  return X @ self.W + self.b
+/home/eurus/Desktop/MLP/mlp-numpy/src/losses.py:5: RuntimeWarning: invalid value encountered in subtract
+  Z_shift = Z - np.max(Z, axis=-1, keepdims=True)
+[done] init_sweep__act-relu__init-normal_large__prep-standardize__bn-0__lr-0.1__bs-128__seed-0  val_acc=0.10383333333333333
+/home/eurus/Desktop/MLP/mlp-numpy/src/layers.py:33: RuntimeWarning: overflow encountered in matmul
+  return X @ self.W + self.b
+/home/eurus/Desktop/MLP/mlp-numpy/src/losses.py:5: RuntimeWarning: invalid value encountered in subtract
+  Z_shift = Z - np.max(Z, axis=-1, keepdims=True)
+[done] init_sweep__act-relu__init-normal_large__prep-standardize__bn-0__lr-0.1__bs-128__seed-1  val_acc=0.10266666666666667
+/home/eurus/Desktop/MLP/mlp-numpy/src/layers.py:33: RuntimeWarning: overflow encountered in matmul
+  return X @ self.W + self.b
+/home/eurus/Desktop/MLP/mlp-numpy/src/layers.py:33: RuntimeWarning: invalid value encountered in matmul
+  return X @ self.W + self.b
+[done] init_sweep__act-relu__init-normal_large__prep-standardize__bn-0__lr-0.1__bs-128__seed-2  val_acc=0.09483333333333334
+[done] init_sweep__act-relu__init-xavier__prep-standardize__bn-0__lr-0.1__bs-128__seed-0  val_acc=0.8883333333333333
+[done] init_sweep__act-relu__init-xavier__prep-standardize__bn-0__lr-0.1__bs-128__seed-1  val_acc=0.8923333333333333
+[done] init_sweep__act-relu__init-xavier__prep-standardize__bn-0__lr-0.1__bs-128__seed-2  val_acc=0.8895
+[done] init_sweep__act-relu__init-he__prep-standardize__bn-0__lr-0.1__bs-128__seed-0  val_acc=0.891
+[done] init_sweep__act-relu__init-he__prep-standardize__bn-0__lr-0.1__bs-128__seed-1  val_acc=0.8855
+[done] init_sweep__act-relu__init-he__prep-standardize__bn-0__lr-0.1__bs-128__seed-2  val_acc=0.8953333333333333
+=== 4. Tiền xử lý (3 cấu hình) ===
+[done] prep_sweep__act-relu__init-he__prep-raw__bn-0__lr-0.1__bs-128__seed-0  val_acc=0.0965
+[done] prep_sweep__act-relu__init-he__prep-raw__bn-0__lr-0.1__bs-128__seed-1  val_acc=0.0905
+[done] prep_sweep__act-relu__init-he__prep-raw__bn-0__lr-0.1__bs-128__seed-2  val_acc=0.09833333333333333
+[done] prep_sweep__act-relu__init-he__prep-scale01__bn-0__lr-0.1__bs-128__seed-0  val_acc=0.8943333333333333
+[done] prep_sweep__act-relu__init-he__prep-scale01__bn-0__lr-0.1__bs-128__seed-1  val_acc=0.8888333333333334
+[done] prep_sweep__act-relu__init-he__prep-scale01__bn-0__lr-0.1__bs-128__seed-2  val_acc=0.8958333333333334
+[done] prep_sweep__act-relu__init-he__prep-standardize__bn-0__lr-0.1__bs-128__seed-0  val_acc=0.891
+[done] prep_sweep__act-relu__init-he__prep-standardize__bn-0__lr-0.1__bs-128__seed-1  val_acc=0.8855
+[done] prep_sweep__act-relu__init-he__prep-standardize__bn-0__lr-0.1__bs-128__seed-2  val_acc=0.8953333333333333
+Xong. Kết quả: logs/runs.csv, results/figures/, results/summary_tables.md
