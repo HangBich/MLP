@@ -1,41 +1,54 @@
-"""Numerical gradient checking — BẮT BUỘC, sai số tương đối < 1e-5,
-và phải in ra được bằng chứng đưa vào báo cáo.
-
-Công thức sai phân trung tâm:
-    g_num[i] = (J(theta + eps*e_i) - J(theta - eps*e_i)) / (2*eps)
-
-Sai số tương đối:
-    rel = ||g_num - g_ana|| / (||g_num|| + ||g_ana|| + tiny)
-
-Mẹo để check thành công:
-  - Dùng float64 (mặc định của NumPy) — float32 không đủ chính xác.
-  - eps ~ 1e-5 .. 1e-7.
-  - Mạng NHỎ (vd 10 mẫu, tầng ẩn 5-4-3) và batch cố định.
-  - TẮT mọi thứ ngẫu nhiên (dropout, shuffle) trong lúc check.
-  - ReLU không khả vi tại 0: nếu rel error lớn bất thường, thử tanh trước
-    để tách bạch lỗi cài đặt với lỗi kink của ReLU.
-"""
 import numpy as np
+from .losses import softmax_cross_entropy
 
 
-def relative_error(g_num, g_ana) -> float:
-    raise NotImplementedError
+def relative_error(g_num, g_ana):
+    g_num, g_ana = np.asarray(g_num), np.asarray(g_ana)
+    return np.linalg.norm(g_num - g_ana) / (
+        np.linalg.norm(g_num) + np.linalg.norm(g_ana) + 1e-12
+    )
 
 
-def check_layer_gradients(model, X, y, eps: float = 1e-5, max_params_per_tensor: int = 50):
-    """Kiểm tra gradient của MỌI tham số (W, b, gamma, beta).
+def check_layer_gradients(model, X, y, eps=1e-5, max_params_per_tensor=50, seed=0):
+    rng = np.random.default_rng(seed)
 
-    Với mỗi tensor, lấy mẫu ngẫu nhiên tối đa `max_params_per_tensor` phần tử
-    (kiểm tra toàn bộ 784x256 phần tử là không cần thiết và rất chậm).
+    loss, dZ = softmax_cross_entropy(model.forward(X), y)
+    model.backward(dZ)
 
-    Returns
-    -------
-    list[dict] : [{"layer": int, "param": "W", "rel_error": float, "passed": bool}, ...]
-    """
-    raise NotImplementedError
+    results = []
+    for li, layer in enumerate(model.layers):
+        pg = layer.params_and_grads()
+        names = ["W", "b"] if len(pg) == 2 else [f"p{k}" for k in range(len(pg))]
+
+        for (param, grad), pname in zip(pg, names):
+            k = min(max_params_per_tensor, param.size)
+            idxs = rng.choice(param.size, size=k, replace=False)
+
+            nums, anas = [], []
+            for idx in idxs:
+                old = param.flat[idx]
+
+                param.flat[idx] = old + eps
+                lp, _ = softmax_cross_entropy(model.forward(X), y)
+
+                param.flat[idx] = old - eps
+                lm, _ = softmax_cross_entropy(model.forward(X), y)
+
+                param.flat[idx] = old          # trả về giá trị gốc
+
+                nums.append((lp - lm) / (2 * eps))
+                anas.append(grad.flat[idx])
+
+            err = relative_error(nums, anas)
+            results.append({"layer": li, "param": pname,
+                            "rel_error": err, "passed": err < 1e-5})
+    return results
 
 
-def format_report(results) -> str:
-    """Xuất bảng text/Markdown để dán thẳng vào báo cáo.
-    Nên có cột: Tầng | Tham số | Sai số tương đối | Đạt (<1e-5)."""
-    raise NotImplementedError
+def format_report(results):
+    lines = ["| Tầng | Tham số | Sai số tương đối | Đạt (<1e-5) |",
+             "|---|---|---|---|"]
+    for r in results:
+        lines.append(f"| {r['layer']} | {r['param']} | {r['rel_error']:.2e} | "
+                     f"{'✓' if r['passed'] else '✗'} |")
+    return "\n".join(lines)

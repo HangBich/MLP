@@ -1,5 +1,3 @@
-"""Cấu hình một lượt chạy. Mọi thí nghiệm đều đi qua đây để đảm bảo công bằng:
-đổi ĐÚNG MỘT biến, giữ nguyên phần còn lại."""
 from dataclasses import dataclass, asdict, field
 from typing import List
 
