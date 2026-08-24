@@ -1,0 +1,13 @@
+Lệch logits : 3.2751579226442118e-15
+Lệch loss   : 3.0320634891722875e-11
+Tầng 0: lệch dW = 1.04e-16   lệch db = 4.16e-17
+Tầng 1: lệch dW = 2.50e-16   lệch db = 4.86e-17
+Tầng 2: lệch dW = 2.78e-16   lệch db = 5.55e-17
+Tầng 3: lệch dW = 3.33e-16   lệch db = 6.94e-17
+
+--- 5 bước SGD, lr = 0.1 ---
+bước 0:  numpy 2.683712440328   torch 2.683712440358   lệch 3.03e-11
+bước 1:  numpy 0.553766027054   torch 0.553766027056   lệch 2.32e-12
+bước 2:  numpy 0.226479039284   torch 0.226479039285   lệch 1.33e-12
+bước 3:  numpy 0.068581288885   torch 0.068581288886   lệch 1.08e-12
+bước 4:  numpy 0.039486575265   torch 0.039486575266   lệch 1.04e-12
