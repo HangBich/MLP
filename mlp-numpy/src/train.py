@@ -25,7 +25,7 @@ def train_one_run(cfg: Config) -> dict:
 
     (Xtr, ytr), (Xte, yte) = data_mod.load_raw(cfg.dataset)
     Xtr, ytr, Xval, yval = data_mod.train_val_split(Xtr, ytr, cfg.val_ratio, rng)
-    Xtr, (Xval, Xte) = data_mod.preprocess(Xtr, [Xval, Xte], cfg.preprocess)
+    Xtr, (Xval, Xte), mu, sd = data_mod.preprocess(Xtr, [Xval, Xte], cfg.preprocess)
 
     model = MLP(Xtr.shape[1], cfg.hidden_sizes, 10, cfg, rng)
     opt = SGD(model.params_and_grads, cfg.lr)
@@ -47,6 +47,12 @@ def train_one_run(cfg: Config) -> dict:
     tel, tea = evaluate(model, Xte, yte)
     path = save_history(cfg.run_id(), {"config": cfg.to_dict(), **history})
 
+    params = {}
+    for i, l in enumerate(model.layers):
+        if hasattr(l, "W"):
+            params[f"W{i}"] = l.W
+            params[f"b{i}"] = l.b
+    np.savez(f"results/model_{cfg.run_id()}.npz", mu=mu, sd=sd, **params)
     return {
         "train_acc": history["train_acc"][-1], 
         "val_acc": history["val_acc"][-1],

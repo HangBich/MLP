@@ -42,16 +42,15 @@ def load_raw(dataset="fashion_mnist", data_dir="./data"):
     return (Xtr, ytr), (Xte, yte)
 
 
-def preprocess(X_train, X_other_list, mode: str):
+def preprocess(X_train, X_other_list, mode):
     if mode == "raw":
-        return X_train, list(X_other_list)
+        return X_train, list(X_other_list), None, None
     if mode == "scale01":
-        return X_train/255.0, [X/255.0 for X in X_other_list]
-    if mode  == "standardize":
-        mu = X_train.mean(axis=0) 
+        return X_train/255.0, [X/255.0 for X in X_other_list], None, None
+    if mode == "standardize":
+        mu = X_train.mean(axis=0)
         sd = X_train.std(axis=0) + 1e-8
-        return (X_train-mu)/sd, [(X-mu)/sd for X in X_other_list]
-    raise ValueError(f"mode không hợp lệ: {mode}")
+        return (X_train-mu)/sd, [(X-mu)/sd for X in X_other_list], mu, sd
 
 
 def train_val_split(X, y, val_ratio: float, rng: np.random.Generator):
