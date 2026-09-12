@@ -26,7 +26,7 @@ def predict(X):
 # 3. Lấy 8 ảnh test ngẫu nhiên
 (_, _), (Xte, yte) = load_raw()
 # Đổi seed slide 42, 
-rng = np.random.default_rng(30)
+rng = np.random.default_rng(42)
 idx = rng.choice(len(Xte), 8, replace=False)
 
 logits = predict(Xte[idx])

@@ -23,11 +23,12 @@ def load_histories():
     return out
 
 
-def _curves(hists, prefix, key, fname, title_hint):
-    """Vẽ loss + accuracy theo epoch cho một nhóm thí nghiệm."""
+def _curves(hists, prefixes, key, fname, title_hint):
+    if isinstance(prefixes, str):
+        prefixes = (prefixes,)
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(11, 4))
     for k, h in sorted(hists.items()):
-        if not k.startswith(prefix) or "seed-0" not in k:
+        if not k.startswith(prefixes) or "seed-0" not in k:
             continue
         name = k.split(key)[1].split("__")[0]
         ax1.plot(h["train_loss"], label=name)
@@ -39,7 +40,7 @@ def _curves(hists, prefix, key, fname, title_hint):
     fig.tight_layout(); fig.savefig(f"{FIG}/{fname}", dpi=150); plt.close(fig)
 
 
-def plot_fig1(h): _curves(h, "act_sweep",  "act-",  "fig1_activation_curves.png", "hàm kích hoạt")
+def plot_fig1(h): _curves(h, ("act_he", "baseline"), "act-", "fig1_activation_curves.png", "hàm kích hoạt")
 def plot_fig4(h): _curves(h, "init_sweep", "init-", "fig4_init_curves.png",       "cách khởi tạo")
 def plot_fig6(h): _curves(h, "prep_sweep", "prep-", "fig6_preprocess_curves.png", "cách tiền xử lý")
 
@@ -81,7 +82,7 @@ def plot_fig3(recs):
        ylabel="RMS của dW  (||dW|| / √số phần tử)",
        title="Độ lớn gradient trung bình theo tầng", yscale="log")
     ax.legend(); ax.grid(alpha=.3)
-    fig.tight_layout(); fig.savefig(f"{FIG}/fig3_grad_norm.png", dpi=150); plt.close(fig)
+    fig.tight_layout(); fig.savefig(f"{FIG}/fig3_grad_rms.png", dpi=150); plt.close(fig)
 
 
 def plot_fig5(recs):
@@ -103,19 +104,18 @@ def plot_fig5(recs):
 
 def plot_fig7(df):
     """Bar chart val_acc mean ± std cho cả ba nhóm thí nghiệm."""
-    groups = [("act_sweep", "activation", "Hàm kích hoạt"),
-              ("init_sweep", "init", "Cách khởi tạo"),
-              ("prep_sweep", "preprocess", "Cách tiền xử lý")]
+    groups = [(("act_he", "baseline"), "activation", "Hàm kích hoạt"),
+              (("init_sweep",), "init", "Cách khởi tạo"),
+              (("prep_sweep",), "preprocess", "Cách tiền xử lý")]
     fig, axes = plt.subplots(1, 3, figsize=(14, 4))
     for ax, (grp, col, title) in zip(axes, groups):
-        g = df[df.exp_group == grp].groupby(col)["val_acc"].agg(["mean", "std"])
+        g = df[df.exp_group.isin(grp)].groupby(col)["val_acc"].agg(["mean", "std"])
         ax.bar(g.index, g["mean"], yerr=g["std"], capsize=4)
         ax.set(ylabel="Val accuracy", title=title, ylim=(0, 1))
         ax.tick_params(axis="x", rotation=30)
         ax.grid(alpha=.3, axis="y")
     fig.suptitle("Accuracy trên tập validation (mean ± std, 3 seed)")
     fig.tight_layout(); fig.savefig(f"{FIG}/fig7_bars.png", dpi=150); plt.close(fig)
-
 
 if __name__ == "__main__":
     os.makedirs(FIG, exist_ok=True)

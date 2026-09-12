@@ -1,5 +1,8 @@
 | exp_group   | activation   | init         | preprocess   |   val_acc_mean |   val_acc_std |   test_acc_mean |   test_acc_std |   conv_epochs |   time_sec |   n_seeds |
 |:------------|:-------------|:-------------|:-------------|---------------:|--------------:|----------------:|---------------:|--------------:|-----------:|----------:|
+| act_he      | leaky_relu   | he           | standardize  |         0.8891 |        0.0018 |          0.882  |         0.0024 |        1      |   102.513  |         3 |
+| act_he      | sigmoid      | he           | standardize  |         0.8879 |        0.001  |          0.8775 |         0.0014 |        3.3333 |   130.487  |         3 |
+| act_he      | tanh         | he           | standardize  |         0.889  |        0.0008 |          0.8815 |         0.0008 |        1      |    99.8467 |         3 |
 | act_sweep   | leaky_relu   | xavier       | standardize  |         0.8904 |        0.0015 |          0.8887 |         0.005  |        1      |   108.39   |         3 |
 | act_sweep   | relu         | xavier       | standardize  |         0.8901 |        0.0021 |          0.886  |         0.0053 |        1      |    93.9767 |         3 |
 | act_sweep   | sigmoid      | xavier       | standardize  |         0.8854 |        0.0027 |          0.8753 |         0.0012 |        5      |   127.43   |         3 |
