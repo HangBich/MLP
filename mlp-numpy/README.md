@@ -10,9 +10,7 @@ cách khởi tạo trọng số và cách tiền xử lý dữ liệu.
 
 | Họ tên | MSSV | Phần phụ trách | Đóng góp |
 |---|---|---|---|
-| | | | % |
-| | | | % |
-| | | | % |
+|Nguyễn Thị Bích Hằng|20261098M |Code, Báo cáo|100% |
 
 ## Cài đặt
 
@@ -90,16 +88,3 @@ experiments/
 - Mỗi cấu hình chạy 3 seed (0, 1, 2); báo cáo trung bình ± độ lệch chuẩn.
 - Mỗi dòng log ghi kèm git commit hash.
 
-## Nguồn tham khảo
-
-> Ghi rõ mọi mã nguồn/tài liệu đã tham khảo, và nêu rõ phần nào nhóm tự viết.
-> Sao chép không trích dẫn bị xử lý theo quy chế đạo văn.
-
-- [ ] ...
-
-**Phần nhóm tự viết:** toàn bộ `src/` (…điền cụ thể…).
-**Phần kế thừa:** …
-
-## Khai báo sử dụng công cụ AI
-
-Xem mục tương ứng ở cuối báo cáo (`report/outline.md`).
